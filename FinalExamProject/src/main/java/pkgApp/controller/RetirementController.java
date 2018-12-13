@@ -6,7 +6,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -63,7 +64,25 @@ public class RetirementController implements Initializable {
 		hmTextField.put(txtRequiredIncome,"\\d*?");
 		hmTextField.put(txtMonthlySSI,"\\d*?");
 		
-		
+		Iterator it = hmTextField.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry) it.next();
+			TextField txtField = (TextField) pair.getKey();
+			String strRegEx = (String) pair.getValue();
+
+			txtField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+				@Override
+				public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue,
+						Boolean newPropertyValue) {
+					if (!newPropertyValue) {
+						if (!txtField.getText().matches(strRegEx)) {
+							txtField.setText("");
+							txtField.requestFocus();
+						}
+					}
+				}
+			});
+		}
 		
 	}
 	
